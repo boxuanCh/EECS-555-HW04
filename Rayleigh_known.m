@@ -24,6 +24,7 @@ EN0=ebn0*16/40; % Energy per coded bit/N0 (not in dB)
 
 N0=1/EN0;
 sigma=sqrt(N0/2); % Variance of noise samples
+sigma_E = sqrt(1/2);
 nerrors=0;
 ntrials=0;
 if (k<13) 
@@ -33,7 +34,7 @@ if (k>12)
     threshold=1000; 
 end %Count 1000 errors for high EbN0
 while nerrors < threshold
-E = abs(randn(4, 10) + 1j * randn(4, 10)).^2; % Rayleigh fading with sigma equal to 1
+E = sigma_E * abs(randn(4, 10) + 1j * randn(4, 10)).^2; % Rayleigh fading with sigma equal to 1
 ntrials=ntrials+1;
 b=sign(rand(4,4)-0.5); % Generate the data bits
 ph=mod(-0.5*(b-1)*G,2); % Generate the horizontal parity
@@ -51,7 +52,7 @@ LHRCVD=2*r(:,1:7).*sqrt(E(:,1:7))/sigma^2; % This is the extrinisic H informatio
 LVRCVD=2*[r(:,1:4)' r(:,8:10)].*sqrt([E(:,1:4)' E(:,8:10)])/sigma^2; % This is the extrinisic V information
 LHcode = cb * LHRCVD';
 LVcode = cb * LVRCVD';
-niterations=2;
+niterations=4;
 for j=1:niterations
 %=========================================================%
 % Compute The likelihoods based on horizontal %
