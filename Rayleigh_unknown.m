@@ -34,7 +34,7 @@ if (k>12)
     threshold=1000; 
 end %Count 1000 errors for high EbN0
 while nerrors < threshold
-E = sigma_E * abs(randn(4, 10) + 1j * randn(4, 10)).^2; % Rayleigh fading with sigma equal to 1
+E = abs(sigma_E * (randn(4, 10) + 1j * randn(4, 10))).^2; % Rayleigh fading with sigma equal to 1
 ntrials=ntrials+1;
 b=sign(rand(4,4)-0.5); % Generate the data bits
 ph=mod(-0.5*(b-1)*G,2); % Generate the horizontal parity
