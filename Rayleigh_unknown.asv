@@ -21,7 +21,7 @@ for k=1:17
 disp(ebn0db(k));
 ebn0=10^(ebn0db(k)/10.0); % Eb/N0 not in dB
 EN0=ebn0*16/40; % Energy per coded bit/N0 (not in dB)
-E=1; % Arbitrary normalization
+
 N0=1/EN0;
 sigma=sqrt(N0/2); % Variance of noise samples
 nerrors=0;
@@ -33,6 +33,7 @@ if (k>12)
     threshold=1000; 
 end %Count 1000 errors for high EbN0
 while nerrors < threshold
+E = abs(randn(4, 10) + 1j * randn(4, 10)).^2; % Rayleigh fading with sigma equal to 1
 ntrials=ntrials+1;
 b=sign(rand(4,4)-0.5); % Generate the data bits
 ph=mod(-0.5*(b-1)*G,2); % Generate the horizontal parity
@@ -45,12 +46,13 @@ LHext = zeros(4, 4); % Initialize horizontal likelihood estimation
 % three are vertical parity checks.
 %=========================================================%
 c=[b 1-2*ph(:,5:7) 1-2*pv(:,5:7)]; % This is the transmitted codeword (4 x 10)
-r=sqrt(E)*c+sigma*randn(4,10); % This is the received vector (4 x 10)
-LHRCVD=2*r(:,1:7)*sqrt(E)/sigma^2; % This is the extrinisic H information
-LVRCVD=2*[r(:,1:4)' r(:,8:10)]*sqrt(E)/sigma^2; % This is the extrinisic V information
+r=sqrt(E).*c+sigma*randn(4,10); % This is the received vector (4 x 10)
+LEX = log((1 - ) / ());
+LHRCVD=2*r(:,1:7).*sqrt(E(:,1:7))/sigma^2; % This is the extrinisic H information
+LVRCVD=2*[r(:,1:4)' r(:,8:10)].*sqrt([E(:,1:4)' E(:,8:10)])/sigma^2; % This is the extrinisic V information
 LHcode = cb * LHRCVD';
 LVcode = cb * LVRCVD';
-niterations=4;
+niterations=2;
 for j=1:niterations
 %=========================================================%
 % Compute The likelihoods based on horizontal %
@@ -91,4 +93,4 @@ axis([-3 6 1e-5 1])
 grid on
 xlabel('E_b/N_0 (dB)','FontSize',16)
 ylabel('BER','FontSize',16)
-save('BER_AWGN.mat', 'ber');
+save('BER_rayleign_known.mat', 'ber');
