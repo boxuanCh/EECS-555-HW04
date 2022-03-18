@@ -49,7 +49,9 @@ LHext = zeros(4, 4); % Initialize horizontal likelihood estimation
 c=[b 1-2*ph(:,5:7) 1-2*pv(:,5:7)]; % This is the transmitted codeword (4 x 10)
 r=sqrt(E).*c+sigma*randn(4,10); % This is the received vector (4 x 10)
 N0 = 2 * sigma^2;
-LEX = log(1 + 4*r/N0*sqrt(2*pi*sigma_E^2).*exp(8*r.^2/N0^2*sigma_E^2).*qfunc(-4*r/N0*sigma_E));
+% LEX = log(1 + 4*r/N0*sqrt(2*pi*sigma_E^2).*exp(8*r.^2/N0^2*sigma_E^2).*qfunc(-4*r/N0*sigma_E));
+mu = 1 + 1/N0; v = r / N0;
+LEX = log(spec_int(mu, -v) ./ spec_int(mu, v));
 LHRCVD=LEX(:,1:7); % This is the extrinisic H information
 LVRCVD=[LEX(:,1:4)' LEX(:,8:10)]; % This is the extrinisic V information
 LHcode = cb * LHRCVD';
